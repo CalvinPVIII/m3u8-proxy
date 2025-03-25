@@ -7,18 +7,18 @@ import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 const debug = debugLib('proxy:debug');
-const cache = new NodeCache({ stdTTL: 600 });
+const cache = new NodeCache({ stdTTL: 14400 });
 
 const SECRET_KEY = process.env.SECRET_KEY || 'update-this-secret';
 
 /** 
  * generateSignedUrl 
  * - Creates a signature for a resourceId
- * - Adds an expiration time (UNIX timestamp, 10 minutes from now)
+ * - Adds an expiration time (UNIX timestamp, 4 hours from now)
  * - Returns a local endpoint: /segment/resource?resourceId=xxx&sig=yyy&exp=zzz
  */
 function generateSignedUrl(resourceId: string, type: 'segment'): string {
-  const exp = Math.floor(Date.now() / 1000) + 600; // 600 seconds = 10 minutes
+  const exp = Math.floor(Date.now() / 1000) + 14400; // 14400 seconds = 4 hours
   const signature = crypto
     .createHmac('sha256', SECRET_KEY)
     .update(`${resourceId}${exp}${type}`)
